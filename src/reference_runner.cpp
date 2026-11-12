@@ -5,11 +5,10 @@
 // Reads a prepared 16 kHz mono WAV, runs WhisperPipeline with an explicit
 // language + transcribe task, and writes a JSON record to --out.
 //
-// Audio ownership: we build std::vector<float> from the WAV, pass it to
-// WhisperPipeline::generate as RawSpeechInput (const std::vector<float>&).
-// The adapter takes it by const& inside std::variant (a copy is made by the
-// variant conversion), so our vector is not read after generate() returns
-// and can be freed immediately.
+// Audio ownership: we build std::vector<float> from the WAV and pass it to
+// WhisperPipeline::generate, which accepts RawSpeechInput as const&. The
+// pipeline does not retain the buffer beyond the call, so this is the last
+// native access; the vector is freed when generate() returns.
 
 #include <algorithm>
 #include <cstdint>
@@ -19,9 +18,12 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <openvino/runtime/properties.hpp>
 
 #include "openvino/genai/whisper_pipeline.hpp"
 
@@ -85,19 +87,57 @@ static bool load_wav_16k_mono(const fs::path& path, WavData& out, std::string& e
     return true;
 }
 
+static std::string json_string_or_null(const std::string& s) {
+    return s.empty() ? std::string("null") : "\"" + json_escape(s) + "\"";
+}
+
+static const char* json_bool(bool b) {
+    return b ? "true" : "false";
+}
+
 static void write_record(std::ostream& os, bool first,
                          const std::string& model_dir,
+                         const std::string& model_id,
+                         const std::string& model_revision,
                          const std::string& audio_id,
                          const std::string& language,
                          const std::string& language_token,
+                         const std::string& wav_path,
+                         const std::string& input_sha256,
+                         const WavData& wav,
+                         const ov::genai::WhisperGenerationConfig& cfg,
                          const ov::genai::WhisperDecodedResults& res) {
     if (!first) os << ",\n";
     os << "  {\n";
     os << "    \"model\": \"" << json_escape(model_dir) << "\",\n";
+    os << "    \"model_id\": " << json_string_or_null(model_id) << ",\n";
+    os << "    \"model_revision\": " << json_string_or_null(model_revision) << ",\n";
     os << "    \"audio_id\": \"" << json_escape(audio_id) << "\",\n";
     os << "    \"language\": \"" << json_escape(language) << "\",\n";
     os << "    \"language_token\": \"" << json_escape(language_token) << "\",\n";
-    os << "    \"task\": \"transcribe\",\n";
+    os << "    \"resolved_language\": \"" << json_escape(res.language) << "\",\n";
+    os << "    \"task\": \"" << json_escape(cfg.task.value_or("")) << "\",\n";
+
+    os << "    \"input\": {\n";
+    os << "      \"wav\": \"" << json_escape(wav_path) << "\",\n";
+    os << "      \"sha256\": " << json_string_or_null(input_sha256) << ",\n";
+    os << "      \"sample_rate_hz\": " << wav.sample_rate << ",\n";
+    os << "      \"channels\": " << wav.channels << ",\n";
+    os << "      \"sample_count\": " << wav.sample_count << ",\n";
+    os << "      \"sample_dtype\": \"float32 (int16/32768)\"\n";
+    os << "    },\n";
+
+    os << "    \"effective_parameters\": {\n";
+    os << "      \"device\": \"CPU\",\n";
+    os << "      \"language\": " << json_string_or_null(cfg.language.value_or("")) << ",\n";
+    os << "      \"task\": " << json_string_or_null(cfg.task.value_or("")) << ",\n";
+    os << "      \"return_timestamps\": " << json_bool(cfg.return_timestamps) << ",\n";
+    os << "      \"word_timestamps\": " << json_bool(cfg.word_timestamps) << ",\n";
+    os << "      \"num_beams\": " << cfg.num_beams << ",\n";
+    os << "      \"do_sample\": " << json_bool(cfg.do_sample) << ",\n";
+    os << "      \"max_new_tokens\": " << cfg.max_new_tokens << ",\n";
+    os << "      \"inference_num_threads\": 1\n";
+    os << "    },\n";
 
     std::string text;
     if (!res.texts.empty()) text = res.texts.front();
@@ -122,7 +162,8 @@ static void write_record(std::ostream& os, bool first,
 }
 
 int main(int argc, char** argv) {
-    std::string model_dir, wav_path, language, language_token, audio_id, out_path;
+    std::string model_dir, model_id, model_revision, wav_path, input_sha256;
+    std::string language, language_token, audio_id, out_path;
 
     for (int i = 1; i < argc; ++i) {
         std::string a = argv[i];
@@ -131,7 +172,10 @@ int main(int argc, char** argv) {
             return argv[++i];
         };
         if      (a == "--model-dir")      model_dir      = need("--model-dir");
+        else if (a == "--model-id")       model_id       = need("--model-id");
+        else if (a == "--model-revision") model_revision = need("--model-revision");
         else if (a == "--wav")            wav_path       = need("--wav");
+        else if (a == "--input-sha256")   input_sha256   = need("--input-sha256");
         else if (a == "--language")       language       = need("--language");
         else if (a == "--language-token") language_token = need("--language-token");
         else if (a == "--audio-id")       audio_id       = need("--audio-id");
@@ -142,7 +186,8 @@ int main(int argc, char** argv) {
         language_token.empty() || audio_id.empty() || out_path.empty()) {
         std::cerr << "usage: reference_runner --model-dir DIR --wav FILE "
                      "--language ru --language-token '<|ru|>' "
-                     "--audio-id ru-001 --out OUT.json\n";
+                     "--audio-id ru-001 --out OUT.json "
+                     "[--model-id ID --model-revision SHA --input-sha256 SHA]\n";
         return 2;
     }
 
@@ -160,13 +205,15 @@ int main(int argc, char** argv) {
     }
 
     try {
-        ov::genai::WhisperPipeline pipe(model_dir, "CPU");
+        // Single-threaded inference keeps greedy decoding bit-for-bit repeatable:
+        // timestamp logits can otherwise flip on rounding differences between runs.
+        ov::genai::WhisperPipeline pipe(model_dir, "CPU", ov::inference_num_threads(1));
 
         ov::genai::WhisperGenerationConfig cfg = pipe.get_generation_config();
         cfg.language          = language_token;   // e.g. "<|ru|>"
         cfg.task              = "transcribe";      // NOT translate
         cfg.return_timestamps = true;
-        //cfg.word_timestamps   = false;
+        cfg.word_timestamps   = false;
         cfg.num_beams         = 1;
         cfg.do_sample         = false;
         cfg.max_new_tokens    = 448;
@@ -183,7 +230,8 @@ int main(int argc, char** argv) {
         std::ofstream out(out_path);
         if (!out) { std::cerr << "ERROR: cannot write " << out_path << "\n"; return 5; }
         out << "[\n";
-        write_record(out, true, model_dir, audio_id, language, language_token, res);
+        write_record(out, true, model_dir, model_id, model_revision, audio_id,
+                     language, language_token, wav_path, input_sha256, wav, cfg, res);
         out << "\n]\n";
         std::cout << "OK: " << audio_id << " / " << language << " -> " << out_path << "\n";
         return 0;

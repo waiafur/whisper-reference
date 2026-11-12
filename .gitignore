@@ -5,3 +5,5 @@ build/
 *.o
 *.so
 *.a
+__pycache__/
+*.pyc

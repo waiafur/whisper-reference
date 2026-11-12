@@ -16,27 +16,31 @@ def sha256(p):
     return h.hexdigest()
 
 def convert(src, dst):
+    # Run from the repository root and record repo-relative paths so the
+    # command in the manifest is portable between machines.
     cmd = ["ffmpeg", "-v", "error", "-y", "-i", str(src), "-map_metadata", "-1",
            "-fflags", "+bitexact", "-flags:a", "+bitexact",
            "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", "-f", "wav", str(dst)]
-    subprocess.run(cmd, check=True)
+    subprocess.run(cmd, check=True, cwd=ROOT)
     return " ".join(cmd)
 
 ffv = subprocess.check_output(["ffmpeg", "-version"], text=True).splitlines()[0]
 items = []
 for it in INPUTS:
     n = it["name"]
-    src = ROOT / "audio/source" / f"{n}.m4a"
-    wav = ROOT / "audio/prepared" / f"{n}.wav"
+    src_rel = pathlib.Path("audio/source") / f"{n}.m4a"
+    wav_rel = pathlib.Path("audio/prepared") / f"{n}.wav"
+    src = ROOT / src_rel
+    wav = ROOT / wav_rel
     f32 = ROOT / "audio/prepared" / f"{n}.f32"
     txt = ROOT / "transcripts" / f"{n}.txt"
     assert src.exists(), src
     assert txt.exists() and txt.read_text(encoding="utf-8").strip(), txt
 
-    cmd = convert(src, wav)
+    cmd = convert(src_rel, wav_rel)
     with tempfile.TemporaryDirectory() as td:   # проверка детерминизма конвертации
         again = pathlib.Path(td) / "again.wav"
-        convert(src, again)
+        convert(src_rel, again)
         assert sha256(again) == sha256(wav), "конвертация недетерминирована"
 
     with wave.open(str(wav), "rb") as w:
@@ -52,7 +56,7 @@ for it in INPUTS:
     items.append({
         "id": it["id"], "language": it["language"], "language_token": it["language_token"],
         "task": "transcribe",
-        "origin": "own recording by the repository author (phone voice recorder)",
+        "origin": "own recording by the repository author",
         "source_file": f"audio/source/{n}.m4a", "source_sha256": sha256(src),
         "prepared_wav": f"audio/prepared/{n}.wav", "prepared_wav_sha256": sha256(wav),
         "float32_dump": f"audio/prepared/{n}.f32", "float32_dump_sha256": sha256(f32),
@@ -62,7 +66,7 @@ for it in INPUTS:
         "wav_sample_dtype": "int16", "wav_sample_min": min(pcm), "wav_sample_max": max(pcm),
         "native_sample_dtype": "float32 (int16 / 32768)",
         "native_sample_min": min(flt), "native_sample_max": max(flt),
-        "conversion": {"tool": ffv, "command": cmd},
+        "conversion": {"tool": ffv, "cwd": "repository root", "command": cmd},
     })
     print(it["id"], "samples:", len(pcm), "dur:", round(len(pcm) / sr, 3), "s")
 

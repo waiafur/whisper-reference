@@ -5,7 +5,7 @@
       "language": "ru",
       "language_token": "<|ru|>",
       "task": "transcribe",
-      "origin": "own recording by the repository author (phone voice recorder)",
+      "origin": "own recording by the repository author",
       "source_file": "audio/source/russian.m4a",
       "source_sha256": "b9d581bbeba2a2cf64a46a9a9aa60ffedb06288b62f610ccc8c03167fd8cf100",
       "prepared_wav": "audio/prepared/russian.wav",
@@ -26,7 +26,8 @@
       "native_sample_max": 0.63201904296875,
       "conversion": {
         "tool": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
-        "command": "ffmpeg -v error -y -i /home/vlad/ov-whisper-refs/audio/source/russian.m4a -map_metadata -1 -fflags +bitexact -flags:a +bitexact -ac 1 -ar 16000 -c:a pcm_s16le -f wav /home/vlad/ov-whisper-refs/audio/prepared/russian.wav"
+        "cwd": "repository root",
+        "command": "ffmpeg -v error -y -i audio/source/russian.m4a -map_metadata -1 -fflags +bitexact -flags:a +bitexact -ac 1 -ar 16000 -c:a pcm_s16le -f wav audio/prepared/russian.wav"
       }
     },
     {
@@ -34,7 +35,7 @@
       "language": "en",
       "language_token": "<|en|>",
       "task": "transcribe",
-      "origin": "own recording by the repository author (phone voice recorder)",
+      "origin": "own recording by the repository author",
       "source_file": "audio/source/english.m4a",
       "source_sha256": "8c5b4c21c6ace8ac5a13041ef48a0fcacd1c383a1388e0207862f07ad5de980f",
       "prepared_wav": "audio/prepared/english.wav",
@@ -55,7 +56,8 @@
       "native_sample_max": 0.6070556640625,
       "conversion": {
         "tool": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
-        "command": "ffmpeg -v error -y -i /home/vlad/ov-whisper-refs/audio/source/english.m4a -map_metadata -1 -fflags +bitexact -flags:a +bitexact -ac 1 -ar 16000 -c:a pcm_s16le -f wav /home/vlad/ov-whisper-refs/audio/prepared/english.wav"
+        "cwd": "repository root",
+        "command": "ffmpeg -v error -y -i audio/source/english.m4a -map_metadata -1 -fflags +bitexact -flags:a +bitexact -ac 1 -ar 16000 -c:a pcm_s16le -f wav audio/prepared/english.wav"
       }
     }
   ]

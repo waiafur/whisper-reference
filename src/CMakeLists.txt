@@ -22,7 +22,6 @@ project(reference_runner CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# ... остальное без изменений ...
 
 set(OV_INSTALL "$ENV{HOME}/openvino-android/openvino-install")
 set(TBB_INSTALL "$ENV{HOME}/openvino-android/one-tbb-install")
@@ -35,7 +34,23 @@ add_executable(reference_runner reference_runner.cpp)
 target_include_directories(reference_runner PRIVATE "${DR_LIBS_DIR}")
 target_link_libraries(reference_runner PRIVATE openvino::genai openvino::runtime)
 
-# Ship shared libs next to the binary
+# Ship shared libs next to the binary. The CPU plugin, IR frontend and
+# tokenizers are loaded at runtime, so they must be staged too; otherwise the
+# runner only works on a machine where they were copied by hand.
+set(OV_RUNTIME_LIB "${OV_INSTALL}/runtime/lib/aarch64")
+set(OV_STAGE_LIBS
+    "${OV_RUNTIME_LIB}/libopenvino.so"
+    "${OV_RUNTIME_LIB}/libopenvino_genai.so"
+    "${OV_RUNTIME_LIB}/libopenvino_arm_cpu_plugin.so"
+    "${OV_RUNTIME_LIB}/libopenvino_ir_frontend.so"
+    "${OV_RUNTIME_LIB}/libopenvino_gguf_frontend.so")
+if(EXISTS "${OV_RUNTIME_LIB}/libopenvino_tokenizers.so")
+    list(APPEND OV_STAGE_LIBS "${OV_RUNTIME_LIB}/libopenvino_tokenizers.so")
+else()
+    list(APPEND OV_STAGE_LIBS
+        "$ENV{HOME}/openvino-android/openvino-build/openvino_genai/libopenvino_tokenizers.so")
+endif()
+
 set(STAGE_DIR "${CMAKE_BINARY_DIR}/stage")
 add_custom_command(TARGET reference_runner POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "${STAGE_DIR}"
@@ -46,8 +61,5 @@ add_custom_command(TARGET reference_runner POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
         "${TBB_INSTALL}/lib/libtbb.so" "${TBB_INSTALL}/lib/libtbbmalloc.so"
         "${TBB_INSTALL}/lib/libtbbmalloc_proxy.so" "${STAGE_DIR}/"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${OV_INSTALL}/runtime/lib/aarch64/libopenvino.so"
-        "${OV_INSTALL}/runtime/lib/aarch64/libopenvino_genai.so"
-        "${STAGE_DIR}/"
+    COMMAND ${CMAKE_COMMAND} -E copy ${OV_STAGE_LIBS} "${STAGE_DIR}/"
     VERBATIM)

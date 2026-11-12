@@ -1,0 +1,194 @@
+{
+  "generated_by": "scripts/make_environment_manifest.py",
+  "device": {
+    "manufacturer": "Xiaomi",
+    "model": "22111317PG",
+    "device": "moonstone",
+    "android_release": "14",
+    "android_sdk": "34",
+    "security_patch": "2025-11-01",
+    "abi": "arm64-v8a",
+    "abilist": "arm64-v8a,armeabi-v7a,armeabi",
+    "soc": "SM6375",
+    "build_fingerprint": "POCO/moonstone_p_global/moonstone:14/UKQ1.231003.002/V816.0.24.0.UMPMIXM:user/release-keys",
+    "status": "recorded",
+    "capture_commands": {
+      "manufacturer": "adb shell getprop ro.product.manufacturer",
+      "model": "adb shell getprop ro.product.model",
+      "device": "adb shell getprop ro.product.device",
+      "android_release": "adb shell getprop ro.build.version.release",
+      "android_sdk": "adb shell getprop ro.build.version.sdk",
+      "security_patch": "adb shell getprop ro.build.version.security_patch",
+      "abi": "adb shell getprop ro.product.cpu.abi",
+      "abilist": "adb shell getprop ro.product.cpu.abilist",
+      "soc": "adb shell getprop ro.soc.model",
+      "build_fingerprint": "adb shell getprop ro.build.fingerprint"
+    }
+  },
+  "runtime": {
+    "openvino_version": "2026.5.0",
+    "openvino_git_revision": "fde316cf48b371dd495e2e0ce840056a6f8a8356",
+    "openvino_genai_version": "2026.5.0.0",
+    "openvino_genai_git_revision": "73c4b0db060c39b6e7c3b7bcdc43e3d69c8a5fb3",
+    "tbb_git_revision": "af14bb56c64295a761732a658de904ebced6a22d",
+    "android_ndk": "28.2.13676358",
+    "android_abi": "arm64-v8a",
+    "android_platform": "android-34",
+    "android_stl": "c++_shared",
+    "cmake": "cmake version 3.28.3",
+    "host_os": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "host_python": "3.12.3"
+  },
+  "export": {
+    "python": "Python 3.12.3",
+    "tools": {
+      "openvino": "2026.4.0",
+      "openvino-tokenizers": "2026.4.0.0",
+      "optimum": "2.3.0",
+      "optimum-intel": "2.2.0",
+      "transformers": "5.5.4",
+      "torch": "2.15.0+cpu",
+      "nncf": "3.4.0"
+    }
+  },
+  "models": {
+    "whisper-tiny-fp16": {
+      "model_id": "openai/whisper-tiny",
+      "hf_revision": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af",
+      "export_command": "optimum-cli export openvino --model hf/whisper-tiny --task automatic-speech-recognition-with-past --weight-format fp16 ov/whisper-tiny-fp16",
+      "weight_format": "fp16",
+      "multilingual": {
+        "vocab_size": 51865,
+        "lang_to_id_count": 99,
+        "is_multilingual": true
+      },
+      "files": {
+        "config.json": {
+          "bytes": 2206,
+          "sha256": "9b1afe1ca9abf6624e5fa722e3c3694cc005e5a57e0253ed67d90bb5a4b307a4"
+        },
+        "generation_config.json": {
+          "bytes": 3741,
+          "sha256": "0c761fe2010f255ab15436f9ade2e05b80db04354048757dcdf367e064add12d"
+        },
+        "openvino_decoder_model.bin": {
+          "bytes": 59104652,
+          "sha256": "512bdeb95dd8ebe05205e6d95c193222798b1142f64b5a8d8be2243deaeafab9"
+        },
+        "openvino_decoder_model.xml": {
+          "bytes": 343748,
+          "sha256": "1940359fdca9c63d9ea068f0d6ab0a23053dc4415ff4cfe3365aa19305b2d368"
+        },
+        "openvino_detokenizer.bin": {
+          "bytes": 736181,
+          "sha256": "2542d1fe6c4c5d838e7b7c61b24996b94ae0cb54e64ff6dbaab2b9dd5ddd7ca0"
+        },
+        "openvino_detokenizer.xml": {
+          "bytes": 9806,
+          "sha256": "a5a88da97a14622620ad4ccdd47723338ac3f3cfc47a6d101f9cde772935871d"
+        },
+        "openvino_encoder_model.bin": {
+          "bytes": 16416874,
+          "sha256": "3a5370a29ae8c03c1ec604414c2fafed0469ad7ff85a62c88e368ab7e1be6eb6"
+        },
+        "openvino_encoder_model.xml": {
+          "bytes": 165962,
+          "sha256": "97b20467d1261aced6861aeda9298eea5058643da6aaace7806bfdac80369a9b"
+        },
+        "openvino_tokenizer.bin": {
+          "bytes": 1898938,
+          "sha256": "a1f2c0e4000169ad67d9eea3359f7a1ce4cb4bf13c0458b26b88ed263b938cda"
+        },
+        "openvino_tokenizer.xml": {
+          "bytes": 28708,
+          "sha256": "414e4f0226a8b9f9a5f8feec9a5fb88670f5d21f22f2d620bc54a0883d90aa9d"
+        },
+        "preprocessor_config.json": {
+          "bytes": 315,
+          "sha256": "ba2e601484abc80f4cded977f9a4fd4a53175b7d35c2f2511f0cfc3a32ad2499"
+        },
+        "processor_config.json": {
+          "bytes": 409,
+          "sha256": "8c648fa85aafc59a07435ed751322499bd4238b819ca9200ddd2b5ba4df50e68"
+        },
+        "tokenizer.json": {
+          "bytes": 3930494,
+          "sha256": "7b469ff15eb7816315aa45eec391f5943d639b9d73d110f5c003df5192fd54e3"
+        },
+        "tokenizer_config.json": {
+          "bytes": 2083,
+          "sha256": "a6a05c76f3872090eeedb19db3cfc89f067fe08ef437e76b78dc5c458b0f8663"
+        }
+      }
+    },
+    "whisper-small-fp16": {
+      "model_id": "openai/whisper-small",
+      "hf_revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+      "export_command": "optimum-cli export openvino --model hf/whisper-small --task automatic-speech-recognition-with-past --weight-format fp16 ov/whisper-small-fp16",
+      "weight_format": "fp16",
+      "multilingual": {
+        "vocab_size": 51865,
+        "lang_to_id_count": 99,
+        "is_multilingual": true
+      },
+      "files": {
+        "config.json": {
+          "bytes": 2188,
+          "sha256": "44a8ed50e1a2f5cfe51ae5cd18e0ad400fa1299b139724fcb2d755861ac97fde"
+        },
+        "generation_config.json": {
+          "bytes": 3862,
+          "sha256": "079273544a4a044e3eaee81ea28a06d4edebef184d40b929feb2ee31187af375"
+        },
+        "openvino_decoder_model.bin": {
+          "bytes": 307161740,
+          "sha256": "595cc9875413619e033a5180a1f6aaee0e473d62fd11b6071abf9f5654cae066"
+        },
+        "openvino_decoder_model.xml": {
+          "bytes": 962247,
+          "sha256": "332f946e419fce15b04b887fe64f86bfe4b5089e9efc97b2a3c752baaecdbbf9"
+        },
+        "openvino_detokenizer.bin": {
+          "bytes": 736181,
+          "sha256": "2542d1fe6c4c5d838e7b7c61b24996b94ae0cb54e64ff6dbaab2b9dd5ddd7ca0"
+        },
+        "openvino_detokenizer.xml": {
+          "bytes": 9806,
+          "sha256": "ca32c5142e2d4326a6e0492786403aac8e67aa86eba284f3499c0981664cbada"
+        },
+        "openvino_encoder_model.bin": {
+          "bytes": 176308330,
+          "sha256": "771c2f08bc68f51d19d0c1e5ce13111ed9828a7e475df98eddb4043dd756f3f2"
+        },
+        "openvino_encoder_model.xml": {
+          "bytes": 470567,
+          "sha256": "147857b6c55e2d579e35547aa17df139eab55374581dc87775ba7a56b342fa67"
+        },
+        "openvino_tokenizer.bin": {
+          "bytes": 1898938,
+          "sha256": "a1f2c0e4000169ad67d9eea3359f7a1ce4cb4bf13c0458b26b88ed263b938cda"
+        },
+        "openvino_tokenizer.xml": {
+          "bytes": 28708,
+          "sha256": "d573c2ddde196753b587c2f5ecbf288b93b3b3ccad87b9561fa161d071c6d218"
+        },
+        "preprocessor_config.json": {
+          "bytes": 315,
+          "sha256": "ba2e601484abc80f4cded977f9a4fd4a53175b7d35c2f2511f0cfc3a32ad2499"
+        },
+        "processor_config.json": {
+          "bytes": 409,
+          "sha256": "8c648fa85aafc59a07435ed751322499bd4238b819ca9200ddd2b5ba4df50e68"
+        },
+        "tokenizer.json": {
+          "bytes": 3930494,
+          "sha256": "7b469ff15eb7816315aa45eec391f5943d639b9d73d110f5c003df5192fd54e3"
+        },
+        "tokenizer_config.json": {
+          "bytes": 2083,
+          "sha256": "a6a05c76f3872090eeedb19db3cfc89f067fe08ef437e76b78dc5c458b0f8663"
+        }
+      }
+    }
+  }
+}
