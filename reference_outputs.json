@@ -1,0 +1,127 @@
+[
+  {
+    "model": "/data/local/tmp/ov-whisper/models/whisper-tiny-fp16",
+    "audio_id": "ru-001",
+    "language": "ru",
+    "language_token": "<|ru|>",
+    "task": "transcribe",
+    "text": " Сегодня утром я проверил, как работает распознавание и вещи на телефоне. Модальсть слушает короткую запись и превращает ее в текст. Если результат оттенаков в прикажном запуске, значит, настройки зафиксированы правильно.",
+    "segments": [
+      {
+        "start": 0,
+        "end": 4.58,
+        "text": " Сегодня утром я проверил, как работает распознавание и"
+      },
+      {
+        "start": 4.58,
+        "end": 7.54,
+        "text": " вещи на телефоне. Модальсть слушает короткую"
+      },
+      {
+        "start": 7.54,
+        "end": 10.88,
+        "text": " запись и превращает ее в текст. Если результат"
+      },
+      {
+        "start": 10.88,
+        "end": 13.92,
+        "text": " оттенаков в прикажном запуске, значит, настройки"
+      },
+      {
+        "start": 13.92,
+        "end": 15.2,
+        "text": " зафиксированы правильно."
+      }
+    ]
+  },
+  {
+    "model": "/data/local/tmp/ov-whisper/models/whisper-tiny-fp16",
+    "audio_id": "en-001",
+    "language": "en",
+    "language_token": "<|en|>",
+    "task": "transcribe",
+    "text": " This morning I tested speech recognition on my phone. The model listens to a short recording and turns it into text. If the result is the same on every run, the settings are fixed correctly.",
+    "segments": [
+      {
+        "start": 0,
+        "end": 4.8,
+        "text": " This morning I tested speech recognition on my phone."
+      },
+      {
+        "start": 4.8,
+        "end": 10.66,
+        "text": " The model listens to a short recording and turns it into text."
+      },
+      {
+        "start": 10.66,
+        "end": 17.2,
+        "text": " If the result is the same on every run, the settings are fixed correctly."
+      }
+    ]
+  },
+  {
+    "model": "/data/local/tmp/ov-whisper/models/whisper-small-fp16",
+    "audio_id": "ru-001",
+    "language": "ru",
+    "language_token": "<|ru|>",
+    "task": "transcribe",
+    "text": " Сегодня утром я проверил, как работает распознавание речи на телефоне. Модель слушает короткую запись и превращает ее в текст. Если результат одинаков при каждом запуске, значит настройки зафиксированы правильно.",
+    "segments": [
+      {
+        "start": 0,
+        "end": 4.48,
+        "text": " Сегодня утром я проверил, как работает распознавание"
+      },
+      {
+        "start": 4.48,
+        "end": 6.24,
+        "text": " речи на телефоне."
+      },
+      {
+        "start": 6.24,
+        "end": 9,
+        "text": " Модель слушает короткую запись и превращает ее"
+      },
+      {
+        "start": 9,
+        "end": 10.12,
+        "text": " в текст."
+      },
+      {
+        "start": 10.12,
+        "end": 13.48,
+        "text": " Если результат одинаков при каждом запуске, значит"
+      },
+      {
+        "start": 13.48,
+        "end": 15.2,
+        "text": " настройки зафиксированы правильно."
+      }
+    ]
+  },
+  {
+    "model": "/data/local/tmp/ov-whisper/models/whisper-small-fp16",
+    "audio_id": "en-001",
+    "language": "en",
+    "language_token": "<|en|>",
+    "task": "transcribe",
+    "text": " This morning I tested speech recognition on my phone. The model listens to a short recording and turns it into text. If the result is the same on every run, the settings are fixed correctly.",
+    "segments": [
+      {
+        "start": 0,
+        "end": 6.8,
+        "text": " This morning I tested speech recognition on my phone. The model listens to a"
+      },
+      {
+        "start": 6.8,
+        "end": 14.08,
+        "text": " short recording and turns it into text. If the result is the same on every run,"
+      },
+      {
+        "start": 14.08,
+        "end": 18.68,
+        "text": " the settings are fixed correctly."
+      }
+    ]
+  }
+]

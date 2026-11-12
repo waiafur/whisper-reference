@@ -1,0 +1,1 @@
+This morning I tested speech recognition on my phone. The model listens to a short recording and turns it into text. If the result is the same on every run, the settings are fixed correctly.

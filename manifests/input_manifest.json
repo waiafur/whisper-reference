@@ -1,0 +1,62 @@
+{
+  "inputs": [
+    {
+      "id": "ru-001",
+      "language": "ru",
+      "language_token": "<|ru|>",
+      "task": "transcribe",
+      "origin": "own recording by the repository author (phone voice recorder)",
+      "source_file": "audio/source/russian.m4a",
+      "source_sha256": "b9d581bbeba2a2cf64a46a9a9aa60ffedb06288b62f610ccc8c03167fd8cf100",
+      "prepared_wav": "audio/prepared/russian.wav",
+      "prepared_wav_sha256": "6c41ce697419a298d362b1a3193903119cc2ed614e594a03f0c96df1ac71dccb",
+      "float32_dump": "audio/prepared/russian.f32",
+      "float32_dump_sha256": "eb48bdd5d5c0efba1f85e232d4659e0fc361f1b71c3771acf7cbe16f8a2ef6f9",
+      "transcript_file": "transcripts/russian.txt",
+      "transcript_sha256": "141d457ce55583084e568412bf9dd284289a2154b32977122329cbb6eaf66ab3",
+      "sample_rate_hz": 16000,
+      "channels": 1,
+      "sample_count": 256341,
+      "duration_s": 16.021,
+      "wav_sample_dtype": "int16",
+      "wav_sample_min": -15641,
+      "wav_sample_max": 20710,
+      "native_sample_dtype": "float32 (int16 / 32768)",
+      "native_sample_min": -0.477325439453125,
+      "native_sample_max": 0.63201904296875,
+      "conversion": {
+        "tool": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+        "command": "ffmpeg -v error -y -i /home/vlad/ov-whisper-refs/audio/source/russian.m4a -map_metadata -1 -fflags +bitexact -flags:a +bitexact -ac 1 -ar 16000 -c:a pcm_s16le -f wav /home/vlad/ov-whisper-refs/audio/prepared/russian.wav"
+      }
+    },
+    {
+      "id": "en-001",
+      "language": "en",
+      "language_token": "<|en|>",
+      "task": "transcribe",
+      "origin": "own recording by the repository author (phone voice recorder)",
+      "source_file": "audio/source/english.m4a",
+      "source_sha256": "8c5b4c21c6ace8ac5a13041ef48a0fcacd1c383a1388e0207862f07ad5de980f",
+      "prepared_wav": "audio/prepared/english.wav",
+      "prepared_wav_sha256": "f0a7413c3bd1d3ded7ac2436ec34ec959a11e4aa21e54683c98d6298eadc7b09",
+      "float32_dump": "audio/prepared/english.f32",
+      "float32_dump_sha256": "4a42d0bc27cc475c2b89d7d4e2f78c6e65b2471d2ebe9f6b9b0df60fcb674746",
+      "transcript_file": "transcripts/english.txt",
+      "transcript_sha256": "d268a09b003c426ad8d68f94b7f7681aa388b3c695e1f2e9aa6bebdd294eacf7",
+      "sample_rate_hz": 16000,
+      "channels": 1,
+      "sample_count": 280576,
+      "duration_s": 17.536,
+      "wav_sample_dtype": "int16",
+      "wav_sample_min": -17218,
+      "wav_sample_max": 19892,
+      "native_sample_dtype": "float32 (int16 / 32768)",
+      "native_sample_min": -0.52545166015625,
+      "native_sample_max": 0.6070556640625,
+      "conversion": {
+        "tool": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+        "command": "ffmpeg -v error -y -i /home/vlad/ov-whisper-refs/audio/source/english.m4a -map_metadata -1 -fflags +bitexact -flags:a +bitexact -ac 1 -ar 16000 -c:a pcm_s16le -f wav /home/vlad/ov-whisper-refs/audio/prepared/english.wav"
+      }
+    }
+  ]
+}
