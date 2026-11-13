@@ -89,9 +89,11 @@ sync with the reference records.
 
 Prerequisites: OpenVINO + OpenVINO GenAI built for Android aarch64 with the CPU
 plugin, oneTBB, Android NDK r28c, `dr_wav.h`, and `adb`. The native OpenVINO
-build is assumed to follow the existing build guide (it is not scripted here);
-the exact runtime revisions are recorded in the environment manifest. Paths
-default to `$HOME/openvino-android` (see `src/CMakeLists.txt`).
+build is assumed to follow the
+[OpenVINO Android build guide](https://github.com/openvinotoolkit/openvino/blob/master/docs/dev/build_android.md)
+(it is not scripted here); the exact runtime revisions are recorded in the
+environment manifest. Paths default to `$HOME/openvino-android` (see
+`src/CMakeLists.txt`).
 
 ```sh
 cmake -S src -B src/build \
